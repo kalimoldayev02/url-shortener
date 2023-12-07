@@ -1,0 +1,12 @@
+env: "" # local, development, production
+http_server: 
+  host: ""
+  port: ""
+  timeout: 4s  # время на чтение/отправку запроса
+  idle_timeout: 60s # время жизни соединения с клиентом
+database:
+  host: ""
+  port: ""
+  user: ""
+  password: ""
+  db_name: ""

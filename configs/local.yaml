@@ -1,0 +1,12 @@
+env: "local" # local, dev, prod
+http_server: 
+  host: "localhost"
+  port: "8080"
+  timeout: 4s  # время на чтение/отправку запроса
+  idle_timeout: 60s # время жизни соединения с клиентом
+database:
+  host: "localhost"
+  port: "5432"
+  user: "root"
+  password: "root"
+  name: "shop"
