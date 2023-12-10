@@ -7,6 +7,6 @@ http_server:
 database:
   host: "localhost"
   port: "5432"
-  user: "root"
-  password: "root"
-  name: "shop"
+  user: "postgres"
+  password: "postgres"
+  name: "url"

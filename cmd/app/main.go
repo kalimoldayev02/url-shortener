@@ -1,10 +1,13 @@
 package main
 
 import (
-	"log/slog"
 	"os"
 
+	"golang.org/x/exp/slog"
+
+	"github.com/kalimoldayev02/shop/internal/repository/storage/postgres"
 	"github.com/kalimoldayev02/shop/pkg/config"
+	"github.com/kalimoldayev02/shop/pkg/lib/logger/sl"
 )
 
 const (
@@ -20,10 +23,16 @@ func main() {
 	log.Info("starting url-shorter", slog.String("env", cfg.Env))
 	log.Debug("debug messages are enabled")
 
+	storage, err := postgres.New(cfg.GetStoragePath())
+	if err != nil {
+		log.Error("failed to init storage", sl.Err(err))
+		os.Exit(1)
+	}
+
+	_ = storage
 }
 
-// установка найтроук логгер
-
+// настройки логирования
 func setupLogger(env string) *slog.Logger {
 	var log *slog.Logger
 
