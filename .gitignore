@@ -1,3 +1,4 @@
 .env
 ./configs/local.yml
 /configs/local.yml
+.idea
