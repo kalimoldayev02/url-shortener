@@ -3,6 +3,8 @@ package postgres
 import (
 	"database/sql"
 	"fmt"
+
+	_ "github.com/lib/pq"
 )
 
 type Storage struct {
@@ -35,4 +37,25 @@ func New(storagePath string) (*Storage, error) {
 	}
 
 	return &Storage{db: db}, nil
+}
+
+func (s *Storage) SaveUrl(urlToSave, alias string) (int64, error) {
+	const operation = "storage.postgres.SaveUrl"
+	query := "INSERT INTO url(url, alias) VALUES ($1, $2) RETURNING id"
+
+	stmp, err := s.db.Prepare(query)
+	if err != nil {
+		return 0, fmt.Errorf("%s: %w", operation, err)
+	}
+
+	var urlId int64
+
+	err = stmp.QueryRow(urlToSave, alias).Scan(&urlId)
+	if err != nil {
+		return 0, fmt.Errorf("%s: %w", operation, err)
+	}
+
+	defer stmp.Close()
+
+	return urlId, nil
 }

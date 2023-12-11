@@ -55,7 +55,6 @@ func Load() *Config {
 }
 
 func (cfg *Config) GetStoragePath() string {
-	fmt.Println(cfg.DataBase.DbUser, cfg.DataBase) // TODO: надо исправить (чтобы через конфиг работал)
 	return fmt.Sprintf("host=%s port=%s user=postgres password=%s dbname=%s sslmode=disable",
 		cfg.DataBase.Host, cfg.DataBase.Port, cfg.DataBase.Password, cfg.DataBase.Name)
 }

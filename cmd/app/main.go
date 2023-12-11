@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"golang.org/x/exp/slog"
@@ -29,7 +30,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	_ = storage
+	lastId, _ := storage.SaveUrl("long-url", "short-url")
+	fmt.Println(lastId)
 }
 
 // настройки логирования
