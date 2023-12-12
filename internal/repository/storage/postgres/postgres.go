@@ -59,3 +59,41 @@ func (s *Storage) SaveUrl(urlToSave, alias string) (int64, error) {
 
 	return urlId, nil
 }
+
+func (s *Storage) GetUrlByAlias(alias string) (string, error) {
+	const operation = "storage.postgres.GetUrlByAlias"
+	query := "SELECT url FROM url WHERE alias = $1"
+
+	stmp, err := s.db.Prepare(query)
+	if err != nil {
+		return "", fmt.Errorf("%s: %w", operation, err)
+	}
+
+	var resUrl string
+
+	err = stmp.QueryRow(alias).Scan(&resUrl)
+	if err != nil {
+		return "", fmt.Errorf("%s: %w", operation, err)
+	}
+
+	defer stmp.Close()
+
+	return resUrl, nil
+}
+
+func (s *Storage) DeleteUrlByAlias(alias string) error {
+	const operation = "storage.postgres.DeleteUrlByAlias"
+	query := "DELETE FROM url WHERE alias = $1"
+
+	stmp, err := s.db.Prepare(query)
+	if err != nil {
+		return fmt.Errorf("%s: %w", operation, err)
+	}
+
+	err = stmp.QueryRow(alias).Scan()
+	if err != nil {
+		return fmt.Errorf("%s: %w", operation, err)
+	}
+
+	return nil
+}
