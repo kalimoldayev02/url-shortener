@@ -1,14 +1,16 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"golang.org/x/exp/slog"
 
-	"github.com/kalimoldayev02/shop/internal/repository/storage/postgres"
-	"github.com/kalimoldayev02/shop/pkg/config"
-	"github.com/kalimoldayev02/shop/pkg/lib/logger/sl"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	mwLogger "github.com/kalimoldayev02/url/internal/http/middleware/logger"
+	"github.com/kalimoldayev02/url/internal/repository/storage/postgres"
+	"github.com/kalimoldayev02/url/pkg/config"
+	"github.com/kalimoldayev02/url/pkg/lib/logger/sl"
 )
 
 const (
@@ -30,8 +32,14 @@ func main() {
 		os.Exit(1)
 	}
 
-	lastId, _ := storage.SaveUrl("long-url", "short-url")
-	fmt.Println(lastId)
+	_ = storage
+	router := chi.NewRouter()
+	router.Use(middleware.RequestID)
+	router.Use(middleware.Logger)
+	router.Use(mwLogger.New(log))
+	router.Use(middleware.Recoverer)
+	router.Use(middleware.URLFormat)
+
 }
 
 // настройки логирования
