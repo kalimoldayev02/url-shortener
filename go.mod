@@ -1,4 +1,4 @@
-module github.com/kalimoldayev02/shop
+module github.com/kalimoldayev02/url
 
 go 1.21.4
 
@@ -11,6 +11,7 @@ require (
 require (
 	github.com/BurntSushi/toml v1.3.2 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
+	github.com/go-chi/chi/v5 v5.0.10 // indirect
 	github.com/google/uuid v1.4.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/ilyakaznacheev/cleanenv v1.5.0 // indirect
