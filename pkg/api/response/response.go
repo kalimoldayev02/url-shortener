@@ -22,4 +22,3 @@ func Error(message string) Response {
 		Error:  message,
 	}
 }
-``

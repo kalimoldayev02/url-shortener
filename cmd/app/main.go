@@ -10,6 +10,7 @@ import (
 	mwLogger "github.com/kalimoldayev02/url/internal/http/middleware/logger"
 	"github.com/kalimoldayev02/url/internal/repository/storage/postgres"
 	"github.com/kalimoldayev02/url/pkg/config"
+	"github.com/kalimoldayev02/url/pkg/lib/logger/handlers/slogpretty"
 	"github.com/kalimoldayev02/url/pkg/lib/logger/sl"
 )
 
@@ -48,9 +49,7 @@ func setupLogger(env string) *slog.Logger {
 
 	switch env {
 	case envLocal:
-		log = slog.New(
-			slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}),
-		)
+		log = setupPrettySlog()
 	case envDev:
 		log = slog.New(
 			slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}),
@@ -62,4 +61,15 @@ func setupLogger(env string) *slog.Logger {
 	}
 
 	return log
+}
+
+func setupPrettySlog() *slog.Logger {
+	opts := slogpretty.PrettyHandlerOptions{
+		SlogOpts: &slog.HandlerOptions{
+			Level: slog.LevelDebug,
+		},
+	}
+
+	handler := opts.NewPrettyHandler(os.Stdout)
+	return slog.New(handler)
 }
