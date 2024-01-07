@@ -1,12 +1,14 @@
 package main
 
 import (
+	"net/http"
 	"os"
 
 	"golang.org/x/exp/slog"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/kalimoldayev02/url/internal/http/handlers/url/save"
 	mwLogger "github.com/kalimoldayev02/url/internal/http/middleware/logger"
 	"github.com/kalimoldayev02/url/internal/repository/storage/postgres"
 	"github.com/kalimoldayev02/url/pkg/config"
@@ -34,6 +36,7 @@ func main() {
 	}
 
 	_ = storage
+
 	router := chi.NewRouter()
 	router.Use(middleware.RequestID)
 	router.Use(middleware.Logger)
@@ -41,6 +44,21 @@ func main() {
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.URLFormat)
 
+	router.Post("/url", save.New(log, storage))
+
+	srv := &http.Server{
+		Addr:         cfg.GetAddress(),
+		Handler:      router,
+		ReadTimeout:  cfg.HttpServer.Timeout,
+		WriteTimeout: cfg.HttpServer.Timeout,
+		IdleTimeout:  cfg.HttpServer.IdleTimeout,
+	}
+
+	if err := srv.ListenAndServe(); err != nil {
+		log.Error("failed to start server")
+	}
+
+	log.Error("server stopped")
 }
 
 // настройки логирования

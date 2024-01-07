@@ -58,3 +58,7 @@ func (cfg *Config) GetStoragePath() string {
 	return fmt.Sprintf("host=%s port=%s user=postgres password=%s dbname=%s sslmode=disable",
 		cfg.DataBase.Host, cfg.DataBase.Port, cfg.DataBase.Password, cfg.DataBase.Name)
 }
+
+func (cfg *Config) GetAddress() string {
+	return fmt.Sprintf("%s:%s", cfg.HttpServer.Host, cfg.HttpServer.Port)
+}

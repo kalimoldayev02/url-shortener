@@ -1,11 +1,13 @@
 package save
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/render"
 	"github.com/go-playground/validator/v10"
+	"github.com/kalimoldayev02/url/internal/repository/storage"
 	resp "github.com/kalimoldayev02/url/pkg/api/response"
 	"github.com/kalimoldayev02/url/pkg/lib/logger/sl"
 	"github.com/kalimoldayev02/url/pkg/random"
@@ -23,7 +25,7 @@ type Response struct {
 }
 
 type URLSaver interface {
-	Save(urlToSave, alias string) (int64, error)
+	SaveUrl(urlToSave, alias string) (int64, error)
 }
 
 // TODO: move to config
@@ -63,9 +65,18 @@ func New(log *slog.Logger, urlSaver URLSaver) http.HandlerFunc {
 			alias = random.NewRandomString(aliasLength)
 		}
 
-		id, err := urlSaver.Save(req.Url, req.Alias)
-		if err != nil {
-
+		id, err := urlSaver.SaveUrl(req.Url, req.Alias)
+		if errors.Is(err, storage.ErrURLExists) {
+			log.Info("url already exists", slog.String("url", req.Url))
+			render.JSON(w, r, resp.Error("url already exists"))
+			return
 		}
+
+		log.Info("url added", slog.Int64("id", id))
+
+		render.JSON(w, r, Response{
+			Response: resp.Ok(),
+			Alias:    alias,
+		})
 	}
 }
